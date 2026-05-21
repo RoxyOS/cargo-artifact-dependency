@@ -3,7 +3,7 @@ use std::{
     path::{Path, PathBuf},
 };
 
-use crate::error::{Error, Result};
+use crate::error::Result;
 use std::ffi::OsString;
 
 pub(crate) fn unique_install_root() -> Result<PathBuf> {
@@ -28,16 +28,15 @@ pub(crate) fn executable_name(bin_name: &str) -> std::ffi::OsString {
 }
 
 pub(crate) fn files_in_dir(dir: &Path) -> Result<Vec<PathBuf>> {
-    let mut files = fs::read_dir(dir)?
-        .filter_map(|entry| entry.ok())
-        .filter_map(|entry| {
-            entry
-                .file_type()
-                .ok()
-                .filter(|file_type| file_type.is_file())
-                .map(|_| entry.path())
-        })
-        .collect::<Vec<_>>();
+    let mut files = Vec::new();
+
+    for entry in fs::read_dir(dir)? {
+        let entry = entry?;
+        if entry.file_type()?.is_file() {
+            files.push(entry.path());
+        }
+    }
+
     files.sort();
     Ok(files)
 }
