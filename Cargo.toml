@@ -3,6 +3,13 @@ name = "cargo-artifact-dependency"
 version = "0.1.0"
 edition = "2024"
 description = "Stable crate alternative for cargo artifact dependency."
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/RoxyOS/cargo-artifact-dependency"
+homepage = "https://github.com/RoxyOS/cargo-artifact-dependency"
+documentation = "https://docs.rs/cargo-artifact-dependency"
+readme = "README.md"
+keywords = ["cargo", "artifact", "dependency", "install"]
+categories = ["development-tools::build-utils"]
 
 [dependencies]
 apply_if = "1.2.1"
