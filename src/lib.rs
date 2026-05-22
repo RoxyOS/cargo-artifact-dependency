@@ -1,5 +1,9 @@
 //! Stable crate alternative for [cargo artifact dependency](https://doc.rust-lang.org/cargo/reference/unstable.html#artifact-dependencies).
 //!
+//! > [!WARNING]
+//! > This crate currently onloy supports binary artifacts. If you need other
+//! > artifact types, please open an issue on github.
+//!
 //! # Why
 //!
 //! Cargo artifact dependencies are still an unstable Cargo feature and may
