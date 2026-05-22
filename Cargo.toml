@@ -8,7 +8,5 @@ description = "Stable crate alternative for cargo artifact dependency."
 apply_if = "1.2.1"
 cargo-install = "0.2.0"
 derive_builder = "0.20.2"
-serde = { version = "1.0.228", features = ["derive"] }
-serde_json = "1.0.145"
 tempfile = "3.23.0"
 thiserror = "2.0.18"
