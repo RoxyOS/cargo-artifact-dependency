@@ -7,7 +7,7 @@
 //!
 //! ```no_run
 //! use cargo_artifact_dependency::{ArtifactDependencyBuilder, BuildProfile};
-//! // Describe the dependency ripgrep and resolve its artifact
+//! // Describe the ripgrep dependency and resolve its artifact.
 //! let artifact_path = ArtifactDependencyBuilder::default()
 //!     .crate_name("ripgrep")
 //!     .version("^14")
@@ -50,7 +50,7 @@ pub enum BuildProfile {
     Custom(String),
 }
 
-/// Describes a artifact dependency.
+/// Describes an artifact dependency.
 ///
 /// Use [`ArtifactDependencyBuilder`] to construct values. `crate_name` is
 /// required; all other fields are optional.
@@ -109,7 +109,7 @@ impl ArtifactDependency {
     }
 }
 
-// Find the artifact in the provided root
+// Find the artifact in the provided root.
 fn find_artifact(install_root: &Path, bin_name: Option<&str>) -> Result<PathBuf> {
     let bin_dir = install_root.join("bin");
 
@@ -130,7 +130,7 @@ fn find_binary_with_name(dir: PathBuf, name: &str) -> Result<PathBuf> {
     }
 }
 
-// Find the singular binary in the binary dir. Used when binary name is not provided.
+// Find the singular binary in the binary directory when no name is provided.
 fn find_single_binary(dir: PathBuf) -> Result<PathBuf> {
     let mut binaries = files_in_dir(&dir)?;
 
