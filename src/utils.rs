@@ -6,6 +6,7 @@ use std::{
 use crate::error::Result;
 use std::ffi::OsString;
 
+// Creates a unique install root for `cargo install` commands.
 pub(crate) fn unique_install_root() -> Result<PathBuf> {
     let dir = tempfile::Builder::new()
         .prefix("cargo-artifact-dependency-")
@@ -27,6 +28,7 @@ pub(crate) fn executable_name(bin_name: &str) -> std::ffi::OsString {
     }
 }
 
+// Returns all the files in a directory
 pub(crate) fn files_in_dir(dir: &Path) -> Result<Vec<PathBuf>> {
     let mut files = Vec::new();
 
