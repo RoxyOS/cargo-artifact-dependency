@@ -1,6 +1,6 @@
 # cargo-artifact-dependency
 
-Stable crate alternative for cargo artifact dependency.
+Stable crate alternative for [cargo artifact dependency](https://doc.rust-lang.org/cargo/reference/unstable.html#artifact-dependencies).
 
 ## Quick Start
 
