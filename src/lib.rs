@@ -70,7 +70,7 @@ pub struct ArtifactDependency {
 }
 
 impl ArtifactDependency {
-    /// Resolves the artifact path for this artifact dependency.
+    /// Resolves the artifact path.
     pub fn resolve(&self) -> Result<PathBuf> {
         let install_root = unique_install_root()?;
 
