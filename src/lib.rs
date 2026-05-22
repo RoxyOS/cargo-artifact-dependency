@@ -38,15 +38,11 @@ use utils::unique_install_root;
 pub use crate::error::{Error, Result};
 use crate::utils::{executable_name, files_in_dir};
 
-/// Build profile selection for the dependency request.
 #[derive(Clone, Debug, PartialEq, Default, Eq)]
 pub enum BuildProfile {
-    /// Request a debug build.
     Debug,
-    /// Request the default release build.
     #[default]
     Release,
-    /// Request a named custom profile.
     Custom(String),
 }
 
