@@ -2,6 +2,12 @@
 
 Stable crate alternative for [cargo artifact dependency](https://doc.rust-lang.org/cargo/reference/unstable.html#artifact-dependencies).
 
+## Why
+
+Cargo artifact dependencies are still an unstable Cargo feature and may still
+have bugs. This crate exists as a temporary alternative while artifact
+dependency support remains unstable.
+
 ## Quick Start
 
 ```rust

@@ -1,5 +1,11 @@
 //! Stable crate alternative for cargo artifact dependency.
 //!
+//! # Why
+//!
+//! Cargo artifact dependencies are still an unstable Cargo feature and may
+//! still have bugs. This crate exists as a temporary alternative while artifact
+//! dependency support remains unstable.
+//!
 //! Use [`ArtifactDependencyBuilder`] to describe a dependency and call
 //! [`ArtifactDependency::resolve`] to resolve its artifact path.
 //!
