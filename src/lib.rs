@@ -1,7 +1,7 @@
 //! Stable crate alternative for cargo artifact dependency.
 //!
 //! Use [`ArtifactDependencyBuilder`] to describe a dependency and call
-//! [`ArtifactDependency::resolve`] to obtain its artifact path.
+//! [`ArtifactDependency::resolve`] to resolve its artifact path.
 //!
 //! # Example
 //!
