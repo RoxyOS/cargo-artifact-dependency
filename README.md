@@ -33,3 +33,22 @@ fn main() -> Result<(), cargo_artifact_dependency::Error> {
     Ok(())
 }
 ```
+
+## Notes
+
+This crate does not emulate Cargo.toml's full `version + path` dependency
+resolution semantics. If you need a local development path, you can gate `.path(...)`
+behind a feature.
+
+For example:
+
+```rust
+let mut builder = ArtifactDependencyBuilder::default()
+    .crate_name("example")
+    .version("0.1");
+
+#[cfg(feature = "local-dev")]
+{
+    builder = builder.path("/absolute/path/to/example");
+}
+```

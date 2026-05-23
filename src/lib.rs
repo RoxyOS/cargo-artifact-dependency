@@ -13,6 +13,12 @@
 //! Use [`ArtifactDependencyBuilder`] to describe a dependency and call
 //! [`ArtifactDependency::resolve`] to resolve its artifact path.
 //!
+//! # Notes
+//!
+//! This crate does not emulate Cargo.toml's full `version + path` dependency
+//! resolution semantics. If you need a local development path, you can gate
+//! `.path(...)` behind a feature.
+//!
 //! # Example
 //!
 //! ```no_run
