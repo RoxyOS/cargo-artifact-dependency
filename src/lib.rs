@@ -60,7 +60,7 @@ pub enum BuildProfile {
 ///
 /// Use [`ArtifactDependencyBuilder`] to construct values. `crate_name` is
 /// required; all other fields are optional.
-#[derive(Builder, Clone, Debug, Default, PartialEq, Eq)]
+#[derive(Builder, Clone, Debug, PartialEq, Eq)]
 #[builder(pattern = "owned", setter(into, strip_option))]
 pub struct ArtifactDependency {
     /// Crate name to resolve.
@@ -77,6 +77,22 @@ pub struct ArtifactDependency {
     #[builder(default)]
     /// Target triple.
     pub target: Option<String>,
+    #[builder(default = "true")]
+    /// Whether to use the exact versions from the dependency's lockfile.
+    pub locked: bool,
+}
+
+impl Default for ArtifactDependency {
+    fn default() -> Self {
+        Self {
+            crate_name: String::new(),
+            version: None,
+            bin_name: None,
+            profile: BuildProfile::Release,
+            target: None,
+            locked: true,
+        }
+    }
 }
 
 impl ArtifactDependency {
@@ -87,7 +103,7 @@ impl ArtifactDependency {
         CargoInstallBuilder::default()
             .crate_name(&self.crate_name)
             .root(&install_root)
-            .locked(true)
+            .locked(self.locked)
             .apply_if_some(self.version.as_deref(), |builder, version_req| {
                 builder.version(version_req)
             })
