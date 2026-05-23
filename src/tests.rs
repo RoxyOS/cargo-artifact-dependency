@@ -171,6 +171,7 @@ fn install_root_changes_for_different_dependency_settings() {
 
 #[test]
 fn install_root_changes_for_version_bin_target_and_locked() {
+    let temp = tempfile::tempdir().unwrap();
     let base = ArtifactDependencyBuilder::default()
         .crate_name("ripgrep")
         .version("14.1.1")
@@ -214,7 +215,7 @@ fn install_root_changes_for_version_bin_target_and_locked() {
     let different_path = ArtifactDependencyBuilder::default()
         .crate_name("ripgrep")
         .version("14.1.1")
-        .path("../ripgrep")
+        .path(temp.path())
         .bin_name("rg")
         .target("x86_64-unknown-linux-gnu")
         .locked(true)
@@ -250,10 +251,13 @@ fn install_root_sanitizes_path_components() {
 
 #[test]
 fn install_root_sanitizes_local_path_component() {
+    let temp = tempfile::tempdir().unwrap();
+    let crate_dir = temp.path().join("some/crate");
+    fs::create_dir_all(&crate_dir).unwrap();
     let request = ArtifactDependencyBuilder::default()
         .crate_name("some-crate")
         .version("0.1")
-        .path("../some/crate")
+        .path(&crate_dir)
         .bin_name("some-bin")
         .build()
         .unwrap();
@@ -261,10 +265,9 @@ fn install_root_sanitizes_local_path_component() {
     let root = request.install_root();
     let root_name = root.file_name().unwrap().to_string_lossy();
 
-    assert_eq!(
-        root_name,
-        "some-crate__0.1__.._some_crate__some-bin__release__host__locked"
-    );
+    assert!(root_name.starts_with("some-crate__0.1__"));
+    assert!(root_name.ends_with("__some-bin__release__host__locked"));
+    assert!(!root_name.contains('/'));
 }
 
 #[test]

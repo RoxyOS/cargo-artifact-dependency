@@ -120,7 +120,7 @@ impl ArtifactDependency {
             .apply_if_some(self.version.as_deref(), |builder, version_req| {
                 builder.version(version_req)
             })
-            .apply_if_some(self.path.as_deref(), |builder, path| builder.path(path))
+            .apply_if_some(self.path(), |builder, path| builder.path(path))
             .apply_if_some(self.bin_name.as_deref(), |builder, bin_name| {
                 builder.bin(bin_name)
             })
