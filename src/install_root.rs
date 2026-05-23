@@ -19,6 +19,11 @@ impl ArtifactDependency {
         [
             self.crate_name.as_str(),
             self.version.as_deref().unwrap_or("any"),
+            self.path
+                .as_ref()
+                .map(|path| path.to_string_lossy())
+                .as_deref()
+                .unwrap_or("registry"),
             self.bin_name.as_deref().unwrap_or("any-bin"),
             profile,
             self.target.as_deref().unwrap_or("host"),

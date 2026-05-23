@@ -74,6 +74,9 @@ pub struct ArtifactDependency {
     /// Version requirement.
     pub version: Option<String>,
     #[builder(default)]
+    /// Local crate directory to resolve from.
+    pub path: Option<PathBuf>,
+    #[builder(default)]
     /// Binary name.
     pub bin_name: Option<String>,
     #[builder(default)]
@@ -92,6 +95,7 @@ impl Default for ArtifactDependency {
         Self {
             crate_name: String::new(),
             version: None,
+            path: None,
             bin_name: None,
             profile: BuildProfile::Release,
             target: None,
@@ -116,6 +120,7 @@ impl ArtifactDependency {
             .apply_if_some(self.version.as_deref(), |builder, version_req| {
                 builder.version(version_req)
             })
+            .apply_if_some(self.path.as_deref(), |builder, path| builder.path(path))
             .apply_if_some(self.bin_name.as_deref(), |builder, bin_name| {
                 builder.bin(bin_name)
             })
