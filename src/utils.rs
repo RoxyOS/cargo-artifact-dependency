@@ -1,4 +1,5 @@
 use std::{
+    borrow::Cow,
     fs,
     path::{Path, PathBuf},
 };
@@ -31,6 +32,27 @@ pub(crate) fn sanitize_path_component(component: &str) -> String {
             }
         })
         .collect()
+}
+
+pub(crate) fn cargo_install_version_req(version: &str) -> Cow<'_, str> {
+    if is_bare_major_minor_version(version) {
+        Cow::Owned(format!("^{version}"))
+    } else {
+        Cow::Borrowed(version)
+    }
+}
+
+fn is_bare_major_minor_version(version: &str) -> bool {
+    let mut parts = version.split('.');
+
+    matches!(
+        (parts.next(), parts.next(), parts.next()),
+        (Some(major), Some(minor), None)
+            if !major.is_empty()
+                && !minor.is_empty()
+                && major.chars().all(|ch| ch.is_ascii_digit())
+                && minor.chars().all(|ch| ch.is_ascii_digit())
+    )
 }
 
 // Returns all the files in a directory

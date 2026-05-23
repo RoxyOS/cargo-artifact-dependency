@@ -1,6 +1,6 @@
 use std::fs;
 
-use crate::utils::{executable_name, sanitize_path_component};
+use crate::utils::{cargo_install_version_req, executable_name, sanitize_path_component};
 use crate::{ArtifactDependencyBuilder, BuildProfile, Error, find_artifact};
 use cargo_install::CargoInstallBuilder;
 
@@ -129,6 +129,15 @@ fn install_builder_contains_path_and_version_arguments() {
             "ripgrep",
         ]
     );
+}
+
+#[test]
+fn cargo_install_version_req_accepts_cargo_toml_shorthand() {
+    assert_eq!(cargo_install_version_req("0.1"), "^0.1");
+    assert_eq!(cargo_install_version_req("14"), "14");
+    assert_eq!(cargo_install_version_req("^14"), "^14");
+    assert_eq!(cargo_install_version_req("14.1.0"), "14.1.0");
+    assert_eq!(cargo_install_version_req("~1.2"), "~1.2");
 }
 
 #[test]
@@ -310,7 +319,7 @@ path = "src/main.rs"
 
     let request = ArtifactDependencyBuilder::default()
         .crate_name("local-tool")
-        .version("0.1.0")
+        .version("0.1")
         .path(&crate_dir)
         .bin_name("local-tool")
         .locked(false)
@@ -347,7 +356,7 @@ path = "src/main.rs"
 
     CargoInstallBuilder::default()
         .crate_name("local-versioned-tool")
-        .version("0.1.0")
+        .version(cargo_install_version_req("0.1").into_owned())
         .path(&crate_dir)
         .bin("local-versioned-tool")
         .root(&root)

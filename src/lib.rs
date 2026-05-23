@@ -51,7 +51,7 @@ use cargo_install::CargoInstallBuilder;
 use derive_builder::Builder;
 
 pub use crate::error::{Error, Result};
-use crate::utils::{executable_name, files_in_dir};
+use crate::utils::{cargo_install_version_req, executable_name, files_in_dir};
 
 #[derive(Clone, Debug, PartialEq, Default, Eq)]
 pub enum BuildProfile {
@@ -118,7 +118,7 @@ impl ArtifactDependency {
             .root(&install_root)
             .locked(self.locked)
             .apply_if_some(self.version.as_deref(), |builder, version_req| {
-                builder.version(version_req)
+                builder.version(cargo_install_version_req(version_req).into_owned())
             })
             .apply_if_some(self.path(), |builder, path| builder.path(path))
             .apply_if_some(self.bin_name.as_deref(), |builder, bin_name| {
