@@ -37,7 +37,7 @@ mod install_root;
 mod utils;
 
 #[cfg(test)]
-mod real_tests;
+mod network_tests;
 #[cfg(test)]
 mod tests;
 
