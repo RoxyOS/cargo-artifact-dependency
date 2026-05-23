@@ -124,6 +124,75 @@ fn install_root_changes_for_different_dependency_settings() {
 }
 
 #[test]
+fn install_root_changes_for_version_bin_target_and_locked() {
+    let base = ArtifactDependencyBuilder::default()
+        .crate_name("ripgrep")
+        .version("14.1.1")
+        .bin_name("rg")
+        .target("x86_64-unknown-linux-gnu")
+        .locked(true)
+        .build()
+        .unwrap();
+    let different_version = ArtifactDependencyBuilder::default()
+        .crate_name("ripgrep")
+        .version("14.1.0")
+        .bin_name("rg")
+        .target("x86_64-unknown-linux-gnu")
+        .locked(true)
+        .build()
+        .unwrap();
+    let different_bin = ArtifactDependencyBuilder::default()
+        .crate_name("ripgrep")
+        .version("14.1.1")
+        .bin_name("rg-alt")
+        .target("x86_64-unknown-linux-gnu")
+        .locked(true)
+        .build()
+        .unwrap();
+    let different_target = ArtifactDependencyBuilder::default()
+        .crate_name("ripgrep")
+        .version("14.1.1")
+        .bin_name("rg")
+        .target("aarch64-unknown-linux-gnu")
+        .locked(true)
+        .build()
+        .unwrap();
+    let different_locked = ArtifactDependencyBuilder::default()
+        .crate_name("ripgrep")
+        .version("14.1.1")
+        .bin_name("rg")
+        .target("x86_64-unknown-linux-gnu")
+        .locked(false)
+        .build()
+        .unwrap();
+
+    assert_ne!(base.install_root(), different_version.install_root());
+    assert_ne!(base.install_root(), different_bin.install_root());
+    assert_ne!(base.install_root(), different_target.install_root());
+    assert_ne!(base.install_root(), different_locked.install_root());
+}
+
+#[test]
+fn install_root_sanitizes_path_components() {
+    let request = ArtifactDependencyBuilder::default()
+        .crate_name("some/crate")
+        .version("^14")
+        .bin_name("bin:name")
+        .profile(BuildProfile::Custom("release+thin".to_string()))
+        .target("x86_64/unknown/linux")
+        .build()
+        .unwrap();
+
+    let root = request.install_root();
+    let root_name = root.file_name().unwrap().to_string_lossy();
+
+    assert_eq!(
+        root_name,
+        "some_crate___14__bin_name__release_thin__x86_64_unknown_linux__locked"
+    );
+}
+
+#[test]
 fn resolves_existing_artifact_from_stable_install_root_without_network() {
     let request = ArtifactDependencyBuilder::default()
         .crate_name("ripgrep")
@@ -201,7 +270,10 @@ fn rejects_ambiguous_binaries_without_network() {
 #[test]
 fn sanitize_path_component_replaces_path_unsafe_characters() {
     assert_eq!(sanitize_path_component("abc-DEF_123.4"), "abc-DEF_123.4");
-    assert_eq!(sanitize_path_component("^14/bin:name+thin"), "_14_bin_name_thin");
+    assert_eq!(
+        sanitize_path_component("^14/bin:name+thin"),
+        "_14_bin_name_thin"
+    );
 }
 
 #[test]
