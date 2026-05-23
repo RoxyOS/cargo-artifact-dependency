@@ -37,3 +37,22 @@ fn resolves_real_binary_crate_from_cache_on_second_run() {
     assert_eq!(first_artifact_path, second_artifact_path);
     assert_eq!(first_modified, second_modified);
 }
+
+#[test]
+#[ignore = "requires network access and runs cargo install"]
+fn falls_back_to_registry_when_local_path_is_unavailable() {
+    let request = ArtifactDependencyBuilder::default()
+        .crate_name("ripgrep")
+        .version("14.1.1")
+        .path("/definitely/not/existing/cargo-artifact-dependency-ripgrep")
+        .bin_name("rg")
+        .profile(BuildProfile::Release)
+        .build()
+        .unwrap();
+    let install_root = request.install_root();
+    _ = fs::remove_dir_all(&install_root);
+
+    let artifact_path = request.resolve().unwrap();
+
+    assert!(artifact_path.is_file());
+}
