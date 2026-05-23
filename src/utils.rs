@@ -6,14 +6,6 @@ use std::{
 use crate::error::Result;
 use std::ffi::OsString;
 
-// Creates a unique install root for `cargo install` commands.
-pub(crate) fn unique_install_root() -> Result<PathBuf> {
-    let dir = tempfile::Builder::new()
-        .prefix("cargo-artifact-dependency-")
-        .tempdir()?;
-    Ok(dir.keep())
-}
-
 pub(crate) fn executable_name(bin_name: &str) -> std::ffi::OsString {
     #[cfg(windows)]
     {
@@ -26,6 +18,19 @@ pub(crate) fn executable_name(bin_name: &str) -> std::ffi::OsString {
     {
         OsString::from(bin_name)
     }
+}
+
+pub(crate) fn sanitize_path_component(component: &str) -> String {
+    component
+        .chars()
+        .map(|ch| {
+            if ch.is_ascii_alphanumeric() || matches!(ch, '.' | '-' | '_') {
+                ch
+            } else {
+                '_'
+            }
+        })
+        .collect()
 }
 
 // Returns all the files in a directory

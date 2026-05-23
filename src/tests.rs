@@ -86,6 +86,61 @@ fn install_builder_contains_expected_arguments() {
 }
 
 #[test]
+fn install_root_is_stable_for_same_dependency() {
+    let first = ArtifactDependencyBuilder::default()
+        .crate_name("ripgrep")
+        .version("14.1.1")
+        .bin_name("rg")
+        .build()
+        .unwrap();
+    let second = ArtifactDependencyBuilder::default()
+        .crate_name("ripgrep")
+        .version("14.1.1")
+        .bin_name("rg")
+        .build()
+        .unwrap();
+
+    assert_eq!(first.install_root(), second.install_root());
+}
+
+#[test]
+fn install_root_changes_for_different_dependency_settings() {
+    let release = ArtifactDependencyBuilder::default()
+        .crate_name("ripgrep")
+        .version("14.1.1")
+        .bin_name("rg")
+        .profile(BuildProfile::Release)
+        .build()
+        .unwrap();
+    let debug = ArtifactDependencyBuilder::default()
+        .crate_name("ripgrep")
+        .version("14.1.1")
+        .bin_name("rg")
+        .profile(BuildProfile::Debug)
+        .build()
+        .unwrap();
+
+    assert_ne!(release.install_root(), debug.install_root());
+}
+
+#[test]
+fn resolves_existing_artifact_from_stable_install_root_without_network() {
+    let request = ArtifactDependencyBuilder::default()
+        .crate_name("ripgrep")
+        .bin_name("rg")
+        .build()
+        .unwrap();
+    let install_root = request.install_root();
+    let bin_dir = install_root.join("bin");
+    fs::create_dir_all(&bin_dir).unwrap();
+    fs::write(bin_dir.join(executable_name("rg")), "").unwrap();
+
+    let artifact_path = request.resolve().unwrap();
+
+    assert_eq!(artifact_path, bin_dir.join(executable_name("rg")));
+}
+
+#[test]
 fn finds_named_installed_binary_without_network() {
     let install_root = tempfile::tempdir().unwrap();
     let bin_dir = install_root.path().join("bin");

@@ -33,17 +33,20 @@
 //! ```
 
 mod error;
+mod install_root;
 mod utils;
 
 #[cfg(test)]
 mod tests;
 
-use std::path::{Path, PathBuf};
+use std::{
+    io,
+    path::{Path, PathBuf},
+};
 
 use apply_if::ApplyIf;
 use cargo_install::CargoInstallBuilder;
 use derive_builder::Builder;
-use utils::unique_install_root;
 
 pub use crate::error::{Error, Result};
 use crate::utils::{executable_name, files_in_dir};
@@ -98,7 +101,11 @@ impl Default for ArtifactDependency {
 impl ArtifactDependency {
     /// Resolves the artifact path.
     pub fn resolve(&self) -> Result<PathBuf> {
-        let install_root = unique_install_root()?;
+        let install_root = self.install_root();
+
+        if let Some(artifact_path) = cached_artifact(&install_root, self.bin_name.as_deref())? {
+            return Ok(artifact_path);
+        }
 
         CargoInstallBuilder::default()
             .crate_name(&self.crate_name)
@@ -128,6 +135,16 @@ impl ArtifactDependency {
             .run()?;
 
         find_artifact(&install_root, self.bin_name.as_deref())
+    }
+}
+
+// Returns the artifact path when the install root already contains one.
+fn cached_artifact(install_root: &Path, bin_name: Option<&str>) -> Result<Option<PathBuf>> {
+    match find_artifact(install_root, bin_name) {
+        Ok(artifact_path) => Ok(Some(artifact_path)),
+        Err(Error::Io(err)) if err.kind() == io::ErrorKind::NotFound => Ok(None),
+        Err(Error::NoInstalledBinaries { .. } | Error::InvalidArtifactPath { .. }) => Ok(None),
+        Err(err) => Err(err),
     }
 }
 
