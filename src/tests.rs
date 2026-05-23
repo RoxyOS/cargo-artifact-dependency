@@ -1,6 +1,6 @@
 use std::fs;
 
-use crate::utils::executable_name;
+use crate::utils::{executable_name, sanitize_path_component};
 use crate::{ArtifactDependencyBuilder, BuildProfile, Error, find_artifact};
 use cargo_install::CargoInstallBuilder;
 
@@ -196,6 +196,12 @@ fn rejects_ambiguous_binaries_without_network() {
     let err = find_artifact(install_root.path(), None).unwrap_err();
 
     assert!(matches!(err, Error::AmbiguousInstalledBinaries));
+}
+
+#[test]
+fn sanitize_path_component_replaces_path_unsafe_characters() {
+    assert_eq!(sanitize_path_component("abc-DEF_123.4"), "abc-DEF_123.4");
+    assert_eq!(sanitize_path_component("^14/bin:name+thin"), "_14_bin_name_thin");
 }
 
 #[test]
