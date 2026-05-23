@@ -66,7 +66,11 @@ pub enum BuildProfile {
 /// Use [`ArtifactDependencyBuilder`] to construct values. `crate_name` is
 /// required; all other fields are optional.
 #[derive(Builder, Clone, Debug, PartialEq, Eq)]
-#[builder(pattern = "owned", setter(into, strip_option))]
+#[builder(
+    pattern = "owned",
+    setter(into, strip_option),
+    build_fn(validate = "Self::validate")
+)]
 pub struct ArtifactDependency {
     /// Crate name to resolve.
     pub crate_name: String,
@@ -101,6 +105,18 @@ impl Default for ArtifactDependency {
             target: None,
             locked: true,
         }
+    }
+}
+
+impl ArtifactDependencyBuilder {
+    fn validate(&self) -> std::result::Result<(), String> {
+        if let Some(Some(path)) = &self.path
+            && !path.is_absolute()
+        {
+            return Err(format!("path must be absolute: `{}`", path.display()));
+        }
+
+        Ok(())
     }
 }
 

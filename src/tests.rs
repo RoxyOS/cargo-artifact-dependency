@@ -88,10 +88,12 @@ fn install_builder_contains_expected_arguments() {
 
 #[test]
 fn install_builder_contains_path_and_version_arguments() {
+    let temp = tempfile::tempdir().unwrap();
+    let crate_dir = temp.path().join("ripgrep");
     let request = ArtifactDependencyBuilder::default()
         .crate_name("ripgrep")
         .version("^14")
-        .path("../ripgrep")
+        .path(&crate_dir)
         .bin_name("rg")
         .profile(BuildProfile::Release)
         .build()
@@ -124,11 +126,22 @@ fn install_builder_contains_path_and_version_arguments() {
             "--bin",
             "rg",
             "--path",
-            "../ripgrep",
+            crate_dir.to_str().unwrap(),
             "--locked",
             "ripgrep",
         ]
     );
+}
+
+#[test]
+fn builder_rejects_relative_path() {
+    let err = ArtifactDependencyBuilder::default()
+        .crate_name("ripgrep")
+        .path("../ripgrep")
+        .build()
+        .unwrap_err();
+
+    assert!(err.to_string().contains("path must be absolute"));
 }
 
 #[test]
