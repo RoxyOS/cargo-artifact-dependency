@@ -15,7 +15,7 @@
 //!
 //! # Example
 //!
-//! ```
+//! ```no_run
 //! use cargo_artifact_dependency::{ArtifactDependencyBuilder, BuildProfile};
 //! // Describe the ripgrep dependency and resolve its artifact.
 //! let artifact_path = ArtifactDependencyBuilder::default()
