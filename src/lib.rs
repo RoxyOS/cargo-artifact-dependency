@@ -1,8 +1,8 @@
 //! Stable crate alternative for [cargo artifact dependency](https://doc.rust-lang.org/cargo/reference/unstable.html#artifact-dependencies).
 //!
-//! > [!WARNING]
-//! > This crate currently only supports binary artifacts. If you need other
-//! > artifact types, please open an [issue on github](https://github.com/RoxyOS/cargo-artifact-dependency/issues).
+//! Warning:
+//! This crate currently only supports binary artifacts. If you need other
+//! artifact types, please open an [issue on github](https://github.com/RoxyOS/cargo-artifact-dependency/issues).
 //!
 //! # Why
 //!
