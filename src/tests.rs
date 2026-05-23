@@ -275,19 +275,3 @@ fn sanitize_path_component_replaces_path_unsafe_characters() {
         "_14_bin_name_thin"
     );
 }
-
-#[test]
-#[ignore = "requires network access and runs cargo install"]
-fn resolves_real_binary_crate() {
-    let request = ArtifactDependencyBuilder::default()
-        .crate_name("ripgrep")
-        .version("14.1.1")
-        .bin_name("rg")
-        .profile(BuildProfile::Release)
-        .build()
-        .unwrap();
-
-    let artifact_path = request.resolve().unwrap();
-
-    assert!(artifact_path.is_file());
-}

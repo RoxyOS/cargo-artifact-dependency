@@ -37,6 +37,8 @@ mod install_root;
 mod utils;
 
 #[cfg(test)]
+mod real_tests;
+#[cfg(test)]
 mod tests;
 
 use std::{
